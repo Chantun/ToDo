@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS subnote (
+  id INTEGER PRIMARY KEY,
+  content TEXT NOT NULL,
+  active BOOLEAN NOT NULL DEFAULT FALSE,
+  father_note INTEGER REFERENCES note(id)
+);
