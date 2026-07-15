@@ -148,3 +148,5 @@ uv.lock
 
 # make
 scripts/build/*
+
+*.db
