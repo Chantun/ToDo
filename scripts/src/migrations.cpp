@@ -10,6 +10,12 @@
 #include <dotenv.h>
 #include <SQLiteCpp/SQLiteCpp.h>
 
+/**
+ * @brief Get the migrations alredy executed.
+ * 
+ * @param db Database
+ * @return std::vector<std::string> Migration's names
+ */
 std::vector<std::string> getCurrentMigrations(SQLite::Database &db) {
   std::vector<std::string> results;
   try {
@@ -23,6 +29,14 @@ std::vector<std::string> getCurrentMigrations(SQLite::Database &db) {
   return results;
 }
 
+/**
+ * @brief Verifies the end of a string.
+ * 
+ * @param str String
+ * @param suffix End
+ * @return true If str ends with suffix
+ * @return false If str doesn't end with suffix
+ */
 bool ends_with(const std::string& str, const std::string& suffix) {
   if (str.length() >= suffix.length()) {
     return (0 == str.compare(str.length() - suffix.length(), suffix.length(), suffix));
@@ -31,6 +45,15 @@ bool ends_with(const std::string& str, const std::string& suffix) {
   }
 }
 
+/**
+ * @brief Get the Files in the migration's path.
+ * 
+ * Read all the file's names and return an vector with
+ * the names of the files that ends with .sql.
+ *
+ * @param path Path of the migrations
+ * @return std::vector<std::string> 
+ */
 std::vector<std::string> getFiles(const std::string &path) {
   namespace fs = std::filesystem;
   std::vector<std::string> files;
@@ -43,6 +66,15 @@ std::vector<std::string> getFiles(const std::string &path) {
   return files;
 }
 
+/**
+ * @brief Get the migrations not executed yet.
+ * 
+ * Deletes from the getFile's vector all the files from getCurrenMigration.
+ *
+ * @param path Path of the migrations
+ * @param db Database
+ * @return std::vector<std::string> 
+ */
 std::vector<std::string> getDiference(const std::string &path, SQLite::Database &db) {
   std::vector<std::string> result;
   std::vector<std::string> files = getFiles(path);
@@ -55,6 +87,12 @@ std::vector<std::string> getDiference(const std::string &path, SQLite::Database 
   return result;
 }
 
+/**
+ * @brief Read's the content of a file.
+ * 
+ * @param path Path to the file.
+ * @return std::string 
+ */
 std::string getFileContent(const std::string &path) {
   std::ifstream file(path);
   std::string str;
@@ -68,6 +106,16 @@ std::string getFileContent(const std::string &path) {
   return fileContent;
 }
 
+/**
+ * @brief Run the code of a migration.
+ *
+ * Uses an transaction, is there are an error, makes an rollback.
+ * 
+ * @param db Database
+ * @param migration Migration's content
+ * @return true 
+ * @return false 
+ */
 bool runMigration(SQLite::Database &db, const std::string &migration) {
   try {
     std::string fullQuery = getFileContent(migration);
@@ -99,6 +147,11 @@ bool runMigration(SQLite::Database &db, const std::string &migration) {
   }
 }
 
+/**
+ * @brief Conects to the database and runs the migrations.
+ * 
+ * @return int
+ */
 int main() {
   dotenv::init("/home/santiago/Projects/web/ToDo/.env");
   std::string migrationsPath = std::getenv("MIGRATIONS");
