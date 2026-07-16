@@ -12,9 +12,9 @@ function Main() {
 
   return (
     <>
-    <button onClick={logout}>
-      Click Me
-    </button>
+      <button onClick={logout}>
+        Click Me
+      </button>
     </>
   )
 }
