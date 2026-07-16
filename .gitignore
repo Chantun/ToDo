@@ -145,6 +145,7 @@ vite.config.ts.timestamp-*
 # Python files
 .venv
 uv.lock
+__pycache__
 
 # make
 scripts/build/*
