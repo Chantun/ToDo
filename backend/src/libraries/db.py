@@ -16,7 +16,8 @@ def getUsers():
   with sqlite3.connect(db_path) as conn:
     conn.row_factory = sqlite3.Row
     res = conn.execute("SELECT id, email, password AS hashed_password FROM user")
-  return res.fetchall()
+    rows = res.fetchall()
+  return [dict(row) for row in rows]
 
 
 def addUser(email: str, password: str):
@@ -41,7 +42,7 @@ def addUser(email: str, password: str):
         (email, password)
       )
     conn.commit()
-    return {"response": "Ok", "user": {"email": email, "password": password}}
+    return {"response": "Ok", "user": {"email": email, "hashed_password": password}}
   except sqlite3.Error as e:
     return {"response": "Error", "error": e}
 

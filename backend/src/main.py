@@ -106,7 +106,8 @@ def login(login_data: LoginRequest, response: Response):
         (u for u in users if u["email"] == login_data.email),
         None
     )
-    if not user or not password_hash.verify(login_data.password, user["hashed_password"]):
+    hashed_password = user.get("hashed_password") if user else None
+    if not user or not hashed_password or not password_hash.verify(login_data.password, hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, 
             detail="Credenciales incorrectas"
