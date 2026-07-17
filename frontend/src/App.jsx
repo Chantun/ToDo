@@ -8,6 +8,7 @@ import {
 
 import Login from "./pages/Login";
 import Main from "./pages/Main";
+import Register from "./pages/Register";
 
 let token;
 
@@ -34,6 +35,7 @@ export default function App() {
         <BrowserRouter>
             <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
                 <Route
                     path="/"

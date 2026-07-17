@@ -1,0 +1,26 @@
+@import url(./index.css);
+
+.entry {
+  display: flex;
+  padding: 18px 26px;
+  font-size: 1.1rem;
+  border-bottom: solid 1px var(--border);
+}
+
+.entry--no-border {
+  border: none;
+}
+
+.check {
+  margin: 0;
+  margin-right: 20px;
+}
+
+.note {
+  margin: 0;
+}
+
+.filter {
+  flex-grow: 1;
+  margin: 0;
+}

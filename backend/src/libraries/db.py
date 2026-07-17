@@ -11,11 +11,11 @@ def getUsers():
   """Obtione los usuarios registrados.
 
   Returns:
-      [{email, password}]: lista con diccionarios que contienen el email y la contasena de cada usuario.
+      [{email, password}]: lista con diccionarios que contienen el id, email y la contasena de cada usuario.
   """
   with sqlite3.connect(db_path) as conn:
     conn.row_factory = sqlite3.Row
-    res = conn.execute("SELECT email, password AS hashed_password FROM user")
+    res = conn.execute("SELECT id, email, password AS hashed_password FROM user")
   return res.fetchall()
 
 
@@ -68,4 +68,45 @@ def deleteUser(email: str):
   except sqlite3.Error as e:
     return {"response": "Error", "error": e}
 
+# Notas
+def addNote(user: int, content: str):
+  """Anade una nueva nota.
 
+  Args:
+      user (int): Id del duenio.
+      content (str): Contenido de la nota.
+
+  Returns:
+      dict: Respuesta de la db.
+  """
+  try:
+    with sqlite3.connect(db_path) as conn:
+      conn.execute(
+          "INSERT INTO note (user_id, content) VALUES (?, ?)",
+          (user, content)
+        )
+    conn.commit()
+    return {"response": "Ok", "note": {"content": content, "active": False}}
+  except sqlite3.Error as e:
+    return {"response": "Error", "error": e}
+  
+def getNotes(user: int):
+  with sqlite3.connect(db_path) as conn:
+    conn.row_factory = sqlite3.Row
+    res = conn.execute(
+      "SELECT id, content, active FROM note WHERE user_id = ?",
+      (user,)
+    )
+  return res.fetchall()
+
+def toggleNote(note: int, active: bool):
+  try:
+    with sqlite3.connect(db_path) as conn:
+      conn.execute(
+        "UPDATE note SET active = ? WHERE id = ?",
+        [active, note]
+      )
+    conn.commit()
+    return {"response": "Ok"}
+  except sqlite3.Error as e:
+    return {"response": "Error", "error": e}

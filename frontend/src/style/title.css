@@ -1,0 +1,33 @@
+@import url(./index.css);
+
+.title__container {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.title {
+  flex-grow: 1;
+  margin: 0;
+}
+
+.title--credentials {
+  text-align: end;
+}
+
+.user {
+  font-size: 0.9rem;
+  margin: 0;
+  color: var(--font);
+  cursor: default;
+}
+
+.logout {
+  font-size: 0.8rem;
+  color: var(--font-second);
+  cursor: pointer;
+}
+.logout:hover {
+  color: var(--selected)
+}

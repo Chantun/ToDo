@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(migrations LANGUAGES CXX)
+project(ToDo LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,8 +17,8 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(dotenv-cpp)
 
-add_executable(build src/migrations.cpp)
+add_executable(migration src/migrations.cpp)
 
-target_include_directories(build PRIVATE ${SQLITECPP_INCLUDE_DIR})
-target_link_libraries(build PRIVATE ${SQLITECPP_LIBRARY})
-target_link_libraries(build PRIVATE dotenv)
+target_include_directories(migration PRIVATE ${SQLITECPP_INCLUDE_DIR})
+target_link_libraries(migration PRIVATE ${SQLITECPP_LIBRARY})
+target_link_libraries(migration PRIVATE dotenv)

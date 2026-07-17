@@ -12,6 +12,10 @@ export const setAccessToken = (token) => {
   accessToken = token;
 };
 
+export const getAccessToken = (token) => {
+  return accessToken;
+}
+
 // 1. Interceptor de Petición: Añade el Access Token en los headers antes de enviar cualquier request
 api.interceptors.request.use(
   (config) => {
@@ -49,7 +53,6 @@ api.interceptors.response.use(
       } catch (refreshError) {
         // Si el refresh token también expiró, redirigimos al usuario al login
         setAccessToken(null);
-        window.location.href = '/login'; 
         return Promise.reject(refreshError);
       }
     }

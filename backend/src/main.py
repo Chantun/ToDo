@@ -23,7 +23,7 @@ app = FastAPI()
 # Configuración de CORS imprescindible para que React se comunique con FastAPI
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # URL de tu frontend React
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],  # URL de tu frontend React
     allow_credentials=True,                   # REQUISITO para poder enviar/recibir cookies
     allow_methods=["*"],
     allow_headers=["*"],
@@ -36,6 +36,13 @@ users = db.getUsers()
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
+
+class AddNoteRequest(BaseModel):
+    content: str
+
+class NoteRequest(BaseModel):
+    id: int
+    value: bool
 
 # --- Utilidades de Tokens ---
 def create_token(data: dict, expires_delta: timedelta) -> str:
@@ -107,11 +114,17 @@ def login(login_data: LoginRequest, response: Response):
     
     # Generamos ambos tokens
     access_token = create_token(
-        {"sub": user["email"]}, 
+        {
+            "sub": user["email"],
+            "id": user["id"]
+        }, 
         timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     refresh_token = create_token(
-        {"sub": user["email"]}, 
+        {
+            "sub": user["email"],
+            "id": user["id"]
+        }, 
         timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
     )
     
@@ -152,12 +165,16 @@ def refresh(request: Request, response: Response):
     try:
         payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
         email = payload.get("sub")
+        user_id = payload.get("id")
         if email is None:
             raise HTTPException(status_code=401, detail="Token inválido")
             
         # Generamos un nuevo Access Token fresco
         new_access_token = create_token(
-            {"sub": email}, 
+            {
+                "sub": email,
+                "id": user_id
+            },
             timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         )
         return {"access_token": new_access_token}
@@ -180,9 +197,20 @@ def logout(response: Response):
     response.delete_cookie("refresh_token")
     return {"detail": "Sesión cerrada con éxito"}
 
-# Endpoint Protegido de ejemplo
-@app.get("/api/dashboard")
-def get_dashboard_data(request: Request):
+@app.get("/api/me")
+def getMe(request: Request):
+    """Retorna el email de quien lo llame.
+
+    Args:
+        request (Request): Para leer las cookies.
+
+    Raises:
+        HTTPException: 401 si el usuario logueado no esta autorizado.
+        HTTPException: 401 si el token a expirado.
+
+    Returns:
+        str: El email de la persona logueada.
+    """
     auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="No autorizado")
@@ -190,6 +218,50 @@ def get_dashboard_data(request: Request):
     token = auth_header.split(" ")[1]
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return {"data": f"Bienvenido, {payload['sub']}. Estos son datos super privados."}
+        return payload['sub']
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token inválido o expirado")
+
+###                    ###
+# Endpoints de las notas #
+###                    ###
+
+@app.post("/api/note/add")
+def addNote(note_data: AddNoteRequest, request: Request):
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="No autorizado")
+    
+    if note_data.content is None:
+        raise HTTPException(status_code=422, detail="Debe ingresar contenido a la nota")
+
+    token = auth_header.split(" ")[1]
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        result = db.addNote(payload['id'], note_data.content)
+        return result
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Token inválido o expirado")
+
+@app.get("/api/note/get")
+def getNote(request: Request):
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="No autorizado")
+    
+    token = auth_header.split(" ")[1]
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        result = db.getNotes(payload['id'])
+        return result
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Token inválido o expirado")
+
+@app.post("/api/note/toggle")
+def toggleNote(note: NoteRequest, request: Request):
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="No autorizado")
+    
+    result = db.toggleNote(note.id, note.value)
+    return result

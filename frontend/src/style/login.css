@@ -1,0 +1,44 @@
+@import url(index.css);
+
+form, label {
+  display: flex;
+  flex-direction: column;
+}
+form {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  gap: 10px;
+}
+label {
+  gap: 8px;
+  padding: 0 12px 6px;
+  font-size: 1rem;
+  border-bottom: solid 1px var(--border);
+}
+
+input {
+  margin-left: 8px;
+  padding: 3px 0 3px 6px;
+  background-color: transparent;
+  color: var(--font);
+  border: none;
+  border-left: solid 3px var(--border);
+  font-size: .9rem;
+}
+input:placeholder {
+  color: var(--placeholder);
+}
+
+.error_span {
+  padding-left: 12px;
+}
+
+.submit {
+  width: 140px;
+  padding: 4px 6px;
+  margin: auto;
+  background-color: var(--background);
+  border: solid 1px var(--border);
+  color: var(--font);
+  box-shadow: 0 0 14px #0006;
+}
