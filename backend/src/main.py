@@ -265,3 +265,17 @@ def toggleNote(note: NoteRequest, request: Request):
     
     result = db.toggleNote(note.id, note.value)
     return result
+
+@app.delete("/api/note/clear")
+def clearNotes(request: Request):
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="No autorizado")
+
+    token = auth_header.split(" ")[1]
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        result = db.clearNotes(payload['id'])
+        return result
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Token inválido o expirado")

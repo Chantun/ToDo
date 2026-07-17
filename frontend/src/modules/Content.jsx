@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
 import Entry from './Entry';
-import '../style/content.css';
+import Options from './Options';
 
 function Content({ update }) {
   const [notes, setNotes] = useState([]);
+  const [clear, setClear] = useState(false);
+  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     const getNotes = async () => {
@@ -17,13 +19,24 @@ function Content({ update }) {
     }
 
     getNotes()
-  }, [update])
+  }, [update, clear])
+
+  const filteredNotes = notes.filter(e => {
+    if (filter === 'active')
+      return !e.active;
+    if (filter === 'completed')
+      return e.active;
+    return true;
+  });
 
   return (
     <div className="container">
-      {notes.map((note) => (
-        <Entry msg={note.content} active={note.active} id={note.id} key={note.id} />
-      ))}
+      <div className="container--notes">
+        {filteredNotes.map((note) => (
+          <Entry msg={note.content} active={note.active} id={note.id} setNotes={setNotes} key={note.id} />
+        ))}
+      </div>
+      <Options setClear={setClear} setFilter={setFilter} filter={filter} count={filteredNotes.length} />
     </div>
   );
 }

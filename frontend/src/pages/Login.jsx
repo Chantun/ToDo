@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import api, { setAccessToken } from '../api/axios';
-import "../style/login.css"
+import "../modules/Header";
+import "../style/login.css";
+import Header from '../modules/Header';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -25,24 +27,31 @@ function Login() {
   };
 
   return (
-    <main>
-      <h2 className="title">LOGIN</h2>
-      <div className="container">
-        <form onSubmit={handleLogin}>
-          <label>
-            Email:
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder='example@test.com' required/>
-          </label>
-          <label>
-            Password:
-            <input type="password" onChange={e => setPassword(e.target.value)} placeholder='1234' required/>
-          </label>
-          <span className="error_span">{error}</span>
-          <button type="submit" className='submit'>Iniciar sesion</button>
-          <button className='submit' onClick={() => {window.location.href = "/register"}}>Registrarme</button>
-        </form>
-      </div>
-    </main>
+    <>
+      <Header />
+      <main>
+        <div className="title__container">
+          <h2 className="title">LOGIN</h2>
+        </div>
+        <div className="container">
+          <form onSubmit={handleLogin}>
+            <label>
+              Email:
+              <input type="email" className='login__input' value={email} onChange={e => setEmail(e.target.value)} placeholder='example@test.com' required/>
+            </label>
+            <label>
+              Password:
+              <input type="password" className='login__input' onChange={e => setPassword(e.target.value)} placeholder='1234' required/>
+            </label>
+            <span className="error_span">{error}</span>
+            <div className="button__container">
+              <button type="submit" className='submit'>Iniciar sesion</button>
+              <button onClick={() => {window.location.href = "/register"}} className='submit'>Registrarme</button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </>
   )
 }
 

@@ -110,3 +110,15 @@ def toggleNote(note: int, active: bool):
     return {"response": "Ok"}
   except sqlite3.Error as e:
     return {"response": "Error", "error": e}
+  
+def clearNotes(user: int):
+  try:
+    with sqlite3.connect(db_path) as conn:
+      conn.execute(
+        "DELETE FROM note WHERE active = 1 AND user_id = ?",
+        (user,)
+      )
+    conn.commit()
+    return {"response": "Ok"}
+  except sqlite3.Error as e:
+    return {"response": "Error", "error": e}

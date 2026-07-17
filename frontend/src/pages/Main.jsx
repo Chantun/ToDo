@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
+import Header from '../modules/Header';
 import Title from '../modules/Title';
 import Filter from '../modules/Filter';
 import Content from '../modules/Content';
@@ -9,11 +10,14 @@ function Main() {
   const [update, setUpdate] = useState(false);
 
   return (
-    <main>
-      <Title />
-      <Filter setUpdate={setUpdate} />
-      <Content update={ update } />
-    </main>
+    <>
+      <Header />
+      <main>
+        <Title />
+        <Filter setUpdate={setUpdate} />
+        <Content update={ update } />
+      </main>
+    </>
   )
 }
 

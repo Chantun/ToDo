@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import api, { setAccessToken } from '../api/axios';
+import "../modules/Header";
 import "../style/login.css";
+import Header from '../modules/Header';
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -28,28 +30,35 @@ function Register() {
   }
 
   return (
-    <main>
-      <h2 className="title">REGISTER</h2>
-      <div className="container">
-        <form onSubmit={handleRegister}>
-          <label>
-            Email:
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder='example@test.com' required/>
-          </label>
-          <label>
-            Password:
-            <input type="password" onChange={e => setPassword(e.target.value)} placeholder='1234' required/>
-          </label>
-          <label>
-            Password x2:
-            <input type="password" onChange={e => setConfirm(e.target.value)} placeholder='1234' required/>
-          </label>
-          <span className="error_span">{error}</span>
-          <button type="submit" className='submit'>Registrarme</button>
-          <button className='submit' onClick={() => {window.location.href = "/login"}}>Iniciar sesion</button>
-        </form>
-      </div>
-    </main>
+    <>
+      <Header />
+      <main>
+        <div className="title__container">
+          <h2 className="title">REGISTER</h2>
+        </div>
+        <div className="container">
+          <form onSubmit={handleRegister}>
+            <label>
+              Email:
+              <input type="email" className='login__input' value={email} onChange={e => setEmail(e.target.value)} placeholder='example@test.com' required/>
+            </label>
+            <label>
+              Password:
+              <input type="password" className='login__input' onChange={e => setPassword(e.target.value)} placeholder='1234' required/>
+            </label>
+            <label>
+              Password x2:
+              <input type="password" className='login__input' onChange={e => setConfirm(e.target.value)} placeholder='1234' required/>
+            </label>
+            <span className="error_span">{error}</span>
+            <div className="button__container">
+              <button type="submit" className='submit'>Registrarme</button>
+              <button className='submit' onClick={() => {window.location.href = "/login"}}>Iniciar sesion</button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </>
   )
 }
 

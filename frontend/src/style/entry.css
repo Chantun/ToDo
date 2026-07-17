@@ -2,7 +2,8 @@
 
 .entry {
   display: flex;
-  padding: 18px 26px;
+  align-items: center;
+  padding: 18px 22px;
   font-size: 1.1rem;
   border-bottom: solid 1px var(--border);
 }
@@ -11,16 +12,70 @@
   border: none;
 }
 
+.entry--options {
+  padding: 16px 26px;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--font-second)
+}
+
 .check {
-  margin: 0;
+  width: 26px;
+  height: 26px;
   margin-right: 20px;
+  background-color: transparent;
+  border: solid 1px var(--border);
+  border-radius: 50%;
+  color: var(--font);
+  font-weight: 700;
+}
+
+.check--active, .check--add:hover {
+  background: linear-gradient(
+    135deg,
+    #80BDEA,
+    #AA78F5
+  );
 }
 
 .note {
   margin: 0;
+  font-weight: 500;
+}
+
+.note--active {
+  color: var(--font-second);
+  font-style: italic;
+  text-decoration: line-through;
 }
 
 .filter {
   flex-grow: 1;
   margin: 0;
+  border: none;
+}
+
+.filter__box {
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+  gap: 20px;
+  font-weight: bolder;
+  font-size: .84rem;
+}
+
+.option {
+  cursor: pointer;
+}
+
+.option--left {
+  cursor: default;
+}
+
+.option--clear:hover {
+  color: var(--selected);
+}
+
+.option--selected {
+  color: var(--selected);
 }

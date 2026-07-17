@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
-import '../style/content.css';
 import '../style/entry.css';
 
 function Filter({ setUpdate: setUpdate }) {
@@ -11,17 +10,24 @@ function Filter({ setUpdate: setUpdate }) {
     try {
       const response = await api.post('/api/note/add', {content: value})
       console.log(response.data.note);
+      setValue('');
       setUpdate(prev => !prev);
     } catch (err) {
       setError(err.response?.data?.detail);
     }
   }
 
+  const handleKey = async (e) => {
+    if (e.key === "Enter") {
+      await addNote();
+    }
+  }
+
   return (
     <div className="container container--filter">
       <div className="entry entry--no-border">
-        <button onClick={addNote} />
-        <input type="text" className="filter" onChange={e => setValue(e.target.value)} placeholder='Create a new todo...' />
+        <button className="check check--add" onClick={addNote} />
+        <input type="text" className="filter" value={value} onChange={e => setValue(e.target.value)} onKeyDown={handleKey} placeholder='Create a new todo...' />
       </div>
       <span className="error_span"></span>
     </div>
