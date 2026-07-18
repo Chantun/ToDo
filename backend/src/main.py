@@ -233,7 +233,7 @@ def addNote(note_data: AddNoteRequest, request: Request):
     if not auth_header or not auth_header.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="No autorizado")
     
-    if note_data.content is None:
+    if note_data.content is '':
         raise HTTPException(status_code=422, detail="Debe ingresar contenido a la nota")
 
     token = auth_header.split(" ")[1]

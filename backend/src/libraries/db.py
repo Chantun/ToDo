@@ -37,12 +37,16 @@ def addUser(email: str, password: str):
 
   try:
     with sqlite3.connect(db_path) as conn:
-      conn.execute(
+      cursor = conn.execute(
         "INSERT INTO user (email, password) VALUES (?, ?)",
         (email, password)
       )
-    conn.commit()
-    return {"response": "Ok", "user": {"email": email, "hashed_password": password}}
+      user_id = cursor.lastrowid
+      conn.commit()
+    return {
+      "response": "Ok",
+      "user": {"id": user_id, "email": email, "hashed_password": password}
+    }
   except sqlite3.Error as e:
     return {"response": "Error", "error": e}
 

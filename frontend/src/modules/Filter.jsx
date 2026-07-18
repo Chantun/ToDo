@@ -11,6 +11,7 @@ function Filter({ setUpdate: setUpdate }) {
       const response = await api.post('/api/note/add', {content: value})
       console.log(response.data.note);
       setValue('');
+      setError('');
       setUpdate(prev => !prev);
     } catch (err) {
       setError(err.response?.data?.detail);
@@ -29,7 +30,7 @@ function Filter({ setUpdate: setUpdate }) {
         <button className="check check--add" onClick={addNote} />
         <input type="text" className="filter" value={value} onChange={e => setValue(e.target.value)} onKeyDown={handleKey} placeholder='Create a new todo...' />
       </div>
-      <span className="error_span"></span>
+      <span className="error_span">{error}</span>
     </div>
   )
 }

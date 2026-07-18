@@ -79,3 +79,18 @@
 .option--selected {
   color: var(--selected);
 }
+
+@media screen and (max-width: 992px) {
+  .entry--options {
+    flex-direction: column;
+    gap: 10px; 
+  }
+
+  .option {
+    font-size: .9rem;
+  }
+
+  .filter__box {
+    text-decoration: underline;
+  }
+}

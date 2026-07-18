@@ -14,6 +14,7 @@ body {
   background-color: var(--background);
   color: var(--font);
   font-family: sans-serif;
+  overflow: hidden;
 }
 
 main {
@@ -78,4 +79,14 @@ input:focus {
   color: var(--error);
   font-style: italic;
   font-family: .8rem;
+}
+
+@media screen and (max-width: 992px) {
+  main {
+    margin: 10px;
+  }
+
+  .container--notes {
+    max-height: 400px;
+  }
 }
