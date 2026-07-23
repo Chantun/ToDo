@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: '/api',
   withCredentials: true, // ¡CRUCIAL! Permite que el navegador envíe la cookie del refresh token de vuelta al backend
 });
 
@@ -39,7 +39,7 @@ api.interceptors.response.use(
       try {
         // Llamamos al backend para renovar el token (se enviará la cookie automáticamente)
         const response = await axios.post(
-          'http://localhost:8000/api/auth/refresh',
+          '/api/auth/refresh',
           {},
           { withCredentials: true }
         );

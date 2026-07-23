@@ -62,7 +62,29 @@ def create_token(data: dict, expires_delta: timedelta) -> str:
 
 # --- Endpoints ---
 
-@app.post("/api/auth/register")
+@app.get("/")
+def status():
+    """Verifica que la api este funcioando
+
+    Returns:
+        dict: Statsu de la api y los endpoints
+    """
+    return {
+        "status": "running",
+        "endpoints": [
+            "/auth/register",
+            "/auth/login",
+            "/auth/refresh",
+            "/auth/logout",
+            "/me",
+            "/note/add",
+            "/note/get",
+            "/note/toggle",
+            "/note/clear"
+        ]
+    }
+
+@app.post("/auth/register")
 def register(login_data: LoginRequest):
     """Endpoint de registro de nuevas cuentas.
 
@@ -88,7 +110,7 @@ def register(login_data: LoginRequest):
     return res
 
 
-@app.post("/api/auth/login")
+@app.post("/auth/login")
 def login(login_data: LoginRequest, response: Response):
     """Endpoint de inicio de sesion.
 
@@ -105,7 +127,7 @@ def login(login_data: LoginRequest, response: Response):
     user = next(
         (u for u in users if u["email"] == login_data.email),
         None
-    )
+    ) 
     hashed_password = user.get("hashed_password") if user else None
     if not user or not hashed_password or not password_hash.verify(login_data.password, hashed_password):
         raise HTTPException(
@@ -142,7 +164,7 @@ def login(login_data: LoginRequest, response: Response):
     # Retornamos el Access Token en el cuerpo de la respuesta para el frontend
     return {"access_token": access_token}
 
-@app.post("/api/auth/refresh")
+@app.post("/auth/refresh")
 def refresh(request: Request, response: Response):
     """Renueva el acces_tocken usando el refresh_token.
 
@@ -184,7 +206,7 @@ def refresh(request: Request, response: Response):
         raise HTTPException(status_code=401, detail="Token expirado o corrupto")
 
 
-@app.post("/api/auth/logout")
+@app.post("/auth/logout")
 def logout(response: Response):
     """Endpoint de cierre de sesion.
 
@@ -198,7 +220,7 @@ def logout(response: Response):
     response.delete_cookie("refresh_token")
     return {"detail": "Sesión cerrada con éxito"}
 
-@app.get("/api/me")
+@app.get("/me")
 def getMe(request: Request):
     """Retorna el email de quien lo llame.
 
@@ -227,8 +249,22 @@ def getMe(request: Request):
 # Endpoints de las notas #
 ###                    ###
 
-@app.post("/api/note/add")
+@app.post("/note/add")
 def addNote(note_data: AddNoteRequest, request: Request):
+    """Anade una nueva nota
+
+    Args:
+        note_data (AddNoteRequest): Contiene el contanido de la nota
+        request (Request): Para acceder a las cookies
+
+    Raises:
+        HTTPException: 401 si no esta autorizado
+        HTTPException: 422 si no se proporciono contenido
+        HTTPException: 401 si el token esta expirado
+
+    Returns:
+        dict: resultado
+    """
     auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="No autorizado")
@@ -244,8 +280,20 @@ def addNote(note_data: AddNoteRequest, request: Request):
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token inválido o expirado")
 
-@app.get("/api/note/get")
+@app.get("/note/get")
 def getNote(request: Request):
+    """Obtener notas del usuario
+
+    Args:
+        request (Request): Para acceder a la cookie
+
+    Raises:
+        HTTPException: 401 si el usuario no esta autorizado
+        HTTPException: 401 si el token expiro
+
+    Returns:
+        dict: resultado
+    """
     auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="No autorizado")
@@ -258,8 +306,20 @@ def getNote(request: Request):
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Token inválido o expirado")
 
-@app.post("/api/note/toggle")
+@app.post("/note/toggle")
 def toggleNote(note: NoteRequest, request: Request):
+    """Cambia el estado de una nota
+
+    Args:
+        note (NoteRequest): id de la nota y el estado al que debe cambiar
+        request (Request): Para leer la cookie
+
+    Raises:
+        HTTPException: 401 Si no esta autorizado
+
+    Returns:
+        dict: resultado
+    """
     auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="No autorizado")
@@ -267,8 +327,20 @@ def toggleNote(note: NoteRequest, request: Request):
     result = db.toggleNote(note.id, note.value)
     return result
 
-@app.delete("/api/note/clear")
+@app.delete("/note/clear")
 def clearNotes(request: Request):
+    """Elimina las notas realizadas
+
+    Args:
+        request (Request): Para leer la cookie
+
+    Raises:
+        HTTPException: 401 si no esta autorizado
+        HTTPException: 401 si el token expiro
+
+    Returns:
+        dict: resultado
+    """
     auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="No autorizado")

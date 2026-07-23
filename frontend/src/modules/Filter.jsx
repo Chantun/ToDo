@@ -8,7 +8,7 @@ function Filter({ setUpdate: setUpdate }) {
 
   const addNote = async () => {
     try {
-      const response = await api.post('/api/note/add', {content: value})
+      const response = await api.post('/note/add', {content: value})
       console.log(response.data.note);
       setValue('');
       setError('');

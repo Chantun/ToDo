@@ -5,7 +5,7 @@ import '../style/entry.css';
 function Options({ setClear, setFilter, filter, count }) {
 
   const handleClear = async () => {
-    await api.delete("/api/note/clear");
+    await api.delete("/note/clear");
     setClear(prev => !prev);
   }
 

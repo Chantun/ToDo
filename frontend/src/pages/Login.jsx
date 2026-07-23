@@ -12,7 +12,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.post('/api/auth/login', { email, password });
+      const response = await api.post('/auth/login', { email, password });
       setAccessToken(response.data.access_token);
       window.location.href = "/";
     } catch (err) {

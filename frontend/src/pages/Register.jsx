@@ -18,7 +18,7 @@ function Register() {
     }
 
     try {
-      const response = await api.post('/api/auth/register', { email, password });
+      const response = await api.post('/auth/register', { email, password });
       window.location.href = "/login";
     } catch (err) {
       if (err.response.status == 422) {

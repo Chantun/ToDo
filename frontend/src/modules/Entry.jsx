@@ -9,7 +9,7 @@ function Entry({ msg, active, id, setNotes }) {
     setValue(prev => {
       const next = !prev;
       try {
-        api.post('/api/note/toggle', {id: id, value: next})
+        api.post('/note/toggle', {id: id, value: next})
         setNotes(prev =>
           prev.map(item => 
             item.id === id

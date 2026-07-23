@@ -11,7 +11,7 @@ function Content({ update }) {
   useEffect(() => {
     const getNotes = async () => {
       try {
-        const response = await api.get("/api/note/get");
+        const response = await api.get("/note/get");
         setNotes(response.data);
       } catch (err) {
         console.error(err);

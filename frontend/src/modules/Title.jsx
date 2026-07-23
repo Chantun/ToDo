@@ -7,7 +7,7 @@ function Title() {
 
   const handleLogout = async () => {
     await api.post(
-      'api/auth/logout'
+      '/auth/logout'
     );
     window.location.href = "/";
   }
@@ -15,7 +15,7 @@ function Title() {
   useEffect(() => {
     async function loadUser() {
       try {
-        const response = await api.get('/api/me');
+        const response = await api.get('/me');
         setUser(response.data);
       } catch (err) {
         console.error(err);

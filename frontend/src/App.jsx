@@ -14,7 +14,7 @@ let token;
 
 try {
   token = await axios.post(
-    "http://localhost:8000/api/auth/refresh",
+    "/api/auth/refresh",
     {},
     { withCredentials: true }
   );
